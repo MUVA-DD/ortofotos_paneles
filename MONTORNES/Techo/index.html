@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Orthomosaic</title>
+        <meta charset="utf-8" />
+        <style>
+            html, body, #map {
+                height: 100%;
+                margin: 0px;
+                padding: 0px
+            }
+        </style>
+
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript">
+            var map;
+
+            function initialize() {
+                var options = {
+                    zoom: 19,
+                    center: new google.maps.LatLng(41.563, 2.26901),
+                    mapTypeId: google.maps.MapTypeId.SATELLITE
+                };
+
+                map = new google.maps.Map(document.getElementById("map"), options);
+
+                var bounds = {
+                    19: [[265448, 265448], [195477, 195478]],
+                    20: [[530896, 530897], [390955, 390956]],
+                    21: [[1061792, 1061795], [781911, 781913]],
+                    22: [[2123585, 2123590], [1563822, 1563827]],
+                    23: [[4247170, 4247180], [3127644, 3127654]],
+                    24: [[8494341, 8494361], [6255289, 6255309]]
+                };
+
+                var imageMapType = new google.maps.ImageMapType({
+                    getTileUrl: function(coord, zoom) {
+                        if (zoom < 19 || zoom > 24 ||
+                            bounds[zoom][0][0] > coord.x || coord.x > bounds[zoom][0][1] ||
+                            bounds[zoom][1][0] > coord.y || coord.y > bounds[zoom][1][1]) {
+                            return null;
+                        }
+
+                        return zoom + "/" + coord.x + "/" + coord.y + ".png";
+                    },
+                    tileSize: new google.maps.Size(256, 256)
+                });
+
+                map.overlayMapTypes.push(imageMapType);
+            }
+
+            google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+    </head>
+    <body>
+        <div id="map"></div>
+    </body>
+</html>
